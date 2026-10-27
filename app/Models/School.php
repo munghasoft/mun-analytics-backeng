@@ -8,7 +8,7 @@ class School extends Model
 {
     protected $fillable = [
         'name',
-        'subdomaun',
+        'subdomain',
         'status',
     ];
 

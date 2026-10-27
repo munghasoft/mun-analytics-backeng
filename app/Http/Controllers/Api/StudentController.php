@@ -10,7 +10,13 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = \App\Models\Student::where('school_id', 1)->paginate(10);
+        $students = \App\Models\Student::where('school_id', 1)
+            ->withSum([
+                'payments as total_paid' => function ($query) {
+                    $query->where('method', 'Cash')
+                    ->where('status', 'approved');
+                }
+            ], 'amount')->paginate(10);
         return response()->json($students);
     }
     public function store(Request $request)

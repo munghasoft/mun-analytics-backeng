@@ -9,6 +9,28 @@ use App\Models\Payment;
 class PaymentController extends Controller
 {
     //
+
+    public function index(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|integer|exists:students,id',
+        ]);
+        $payments = Payment::where('student_id',$validated['student_id'])
+            ->orderByDesc('payment_date')
+            ->get([
+                'id',
+                'student_id',
+                'amount',
+                'method',
+                'reference',
+                'status',
+                'payment_date'
+            ]);
+
+        return response()->json($payments);
+    }
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -16,7 +38,7 @@ class PaymentController extends Controller
             'student_id' => 'required|exists:students,id',
             'amount' => 'required|numeric',
             'method' => 'required|string',
-            'reference' => 'required|string',
+            'reference' => 'nullable|string',
             'payment_date' => 'required|date',
         ]);
 
@@ -24,7 +46,8 @@ class PaymentController extends Controller
             'school_id' => $validated['school_id'],
             'student_id' => $validated['student_id'],
             'amount' => $validated['amount'],
-            'reference' => $validated['referencr'],
+            'method' => $validated['method'],
+            'reference' => $validated['reference'] ?? null,
             'status' => 'approved',
             'payment_date' => $validated['payment_date'],
         ]);
