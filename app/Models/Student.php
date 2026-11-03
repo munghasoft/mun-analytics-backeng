@@ -14,6 +14,7 @@ class Student extends Model
         'last_name',
         'class_name',
         'is_boarder',
+        'fee_category',
         'parent_name',
         'parent_phone',
         'parent_address',
